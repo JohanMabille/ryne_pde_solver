@@ -12,4 +12,3 @@ vector<vector<double>> trigMat(const vector<vector<double>>& A, const vector<dou
 vector<double> trigMult(const vector<vector<double>>& tridiag, const vector<double>& f);
 vector<double> addVec(const vector<double>& a, const vector<double>& b);
 vector<double> subVec(const vector<double>& a, const vector<double>& b);
-

@@ -25,22 +25,17 @@ vector<vector<double>> trigMat(const vector<vector<double>>& A,const vector<doub
     int n = A[1].size();
 
     vector<double> newA(n - 1);
-    //newA[0] = A.get(0, 1) / A.get(0, 0);
     newA[0] = A[0][0] / A[1][0];
     for (int i = 1; i < n - 1; ++i) {
-        //double val = A.get(i, i + 1) / (A.get(i, i) - A.get(i - 1, i) * A.get(i, i - 1));
         double val = A[0][i] / (A[1][i] - A[0][i - 1] * A[2][i - 1]);
         newA[i] = val;
     }
 
     vector<double> newB(n);
-    //newB[0] = b.get(0, 0) / A.get(0, 0);
     newB[0] = b[0] / A[1][0];
 
     for (int i = 1; i < n; ++i) {
-        //double val = b.get(i, 0) - newB[i - 1] * A.get(i, i - 1);
         double val = b[i] - newB[i - 1] * A[2][i - 1];
-        //val /= A.get(i, i) - newA[i - 1] * A.get(i, i - 1);
         val /= A[1][i] - newA[i - 1] * A[2][i - 1];
         newB[i] = val;
     }
