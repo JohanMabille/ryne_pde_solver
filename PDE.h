@@ -55,6 +55,11 @@ private:
 	double dx;
 	double dt;
 	double theta;
+	int current;
+	bool isConst;
+	bool constBound;
+	void step();
+
 
 public:
 	vector<vector<double>> values;
@@ -66,6 +71,8 @@ public:
 	 * @param meshT the T mesh ( assumes the mesh has a constant dt step )
 	 * @param bound the boundary conditions and payoff
 	 * @param theta theta scheme coefficient
+	 * @param isConst whether pde coefficients are constant. if true caches the weight matrix
+	 * @param constBound whether boundary conditions are constant. for further caching
 	 */
 
 	PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound, double theta);
@@ -78,5 +85,6 @@ public:
 	
 	vector<vector<double>> getWeight(int n, double theta) const;
 	vector<double> getBias(int n, double theta) const;
+	stepMat getStepMatrices(int n) const;
 };
 
