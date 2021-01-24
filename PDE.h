@@ -58,6 +58,10 @@ private:
 	int current;
 	bool isConst;
 	bool constBound;
+	vector<vector<double>> cacheA;
+	vector<double> cacheB;
+	vector<vector<double>> cacheC;
+	vector<double> cacheD;
 	void step();
 
 
@@ -81,10 +85,10 @@ public:
 	double alpha(double x, double t, double theta) const;
 	double beta(double x, double t, double theta) const;
 	double gamma(double x, double t, double theta) const;
-
-	
 	vector<vector<double>> getWeight(int n, double theta) const;
 	vector<double> getBias(int n, double theta) const;
+	vector<double> getBiasfromCache(int n, bool current) const;
 	stepMat getStepMatrices(int n) const;
+	void solve();
 };
 

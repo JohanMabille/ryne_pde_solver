@@ -53,17 +53,39 @@ vector<double> PDE::getBias(int n, double theta) const {
 	return dVec;
 }
 
+vector<double> PDE::getBiasfromCache(int n, bool current) const {
+	double t = this->meshT[n];
+	int size = this->meshX.size();
+	vector<double> dVec = (current) ? cacheD : cacheB;
+	double theta = (current) ? this->theta : this->theta - 1;
+	dVec[0] += this->alpha(this->meshX[0], t, theta) * this->bound.xmin(this->meshX[0], t);
+	dVec[size - 3] += this->gamma(this->meshX[size - 1], t, theta) * this->bound.xmax(this->meshX[size - 1], t);
+	return dVec;
+}
+
 stepMat PDE::getStepMatrices(int n) const {
 	// Af(n+1)+B = Cf(n)+D
 	vector<vector<double>> A;
 	vector<double> B;
 	vector<vector<double>> C;
 	vector<double> D;
-	A = this->getWeight(n + 1, this->theta - 1);
-	B = this->getBias(n + 1, this->theta - 1);
-	C = this->getWeight(n, this->theta);
-	D = this->getBias(n, this->theta);
-	
+	if (isConst) {
+		A = cacheA;
+		C = cacheC;
+		if (constBound) {
+			B = cacheB;
+		}
+		else {
+			B = getBiasfromCache(n, false);
+			D = getBiasfromCache(n, true);
+		}
+	}
+	else {
+		A = this->getWeight(n + 1, this->theta - 1);
+		B = this->getBias(n + 1, this->theta - 1);
+		C = this->getWeight(n, this->theta);
+		D = this->getBias(n, this->theta);
+	}
 	return { A,B,C,D };
 }
 
@@ -101,4 +123,10 @@ void PDE::step() {
 
 	this->values[n] = res;
 	current--;
+}
+
+void PDE::solve() {
+	for (int i = 0; i < this->meshT.size() - 1; ++i) {
+		this->step();
+	}
 }
