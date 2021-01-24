@@ -1,4 +1,5 @@
 #include "PDE.h"
+#include <cassert>
 
 using namespace std;
 
@@ -14,13 +15,15 @@ double PDE::gamma(double x, double t, double theta) const {
 	return (dt * theta) * (coef.a(x, t) / dx + coef.b(x, t) / 2) / dx;
 }
 
-PDE::PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound, double theta) :
-	coef(coef), meshX(meshX), meshT(meshT), bound(bound), theta(theta) {
+PDE::PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound,
+ 	double theta, bool isConst, bool constBound) :
+	coef(coef), meshX(meshX), meshT(meshT), bound(bound), theta(theta), isConst(isConst), constBound(constBound) {
 	this->dx = meshX[1] - meshX[0];
 	this->dt = meshT[1] - meshT[0];
 	this->meshX_center = vector<double>(meshX.begin() + 1, meshX.end() - 1);
 	this->meshX_alpha = vector<double>(meshX.begin() + 1, meshX.end() - 2);
 	this->meshX_gamma = vector<double>(meshX.begin() + 2, meshX.end() - 1);
+
 	this->values = vector<vector<double>>(meshT.size());
 	this->values[meshT.size() - 1] = apply2D(bound.tbound, this->meshX_center, *(meshT.end() - 1));
 	current = meshT.size() - 2;
@@ -48,4 +51,54 @@ vector<double> PDE::getBias(int n, double theta) const {
 	dVec[0] += this->alpha(this->meshX[0], t, theta) * this->bound.xmin(this->meshX[0], t);
 	dVec[size - 3] += this->gamma(this->meshX[size - 1], t, theta) * this->bound.xmax(this->meshX[size - 1], t);
 	return dVec;
+}
+
+stepMat PDE::getStepMatrices(int n) const {
+	// Af(n+1)+B = Cf(n)+D
+	vector<vector<double>> A;
+	vector<double> B;
+	vector<vector<double>> C;
+	vector<double> D;
+	A = this->getWeight(n + 1, this->theta - 1);
+	B = this->getBias(n + 1, this->theta - 1);
+	C = this->getWeight(n, this->theta);
+	D = this->getBias(n, this->theta);
+	
+	return { A,B,C,D };
+}
+
+void PDE::step() {
+	assert(current>=0);
+
+	int n = current;
+
+	vector<double> f = this->values[n + 1];
+	stepMat mats = this->getStepMatrices(n);
+	
+	vector<double> biasDiff;
+
+	if (isConst&&constBound) {
+		biasDiff = mats.B;
+	}
+	else {
+		biasDiff = subVec(mats.B, mats.D);
+	}	
+
+	vector<vector<double>> A = mats.C;
+	vector<double> b = addVec(trigMult(mats.A, f), biasDiff);
+
+	vector<vector<double>> trig = trigMat(A, b);
+
+	vector<double> C = trig[0];
+	vector<double> D = trig[1];
+
+	vector<double> res(D.size());
+
+	res[res.size() - 1] = D[res.size() - 1];
+	for (int i = res.size() - 2; i >= 0; --i) {
+		res[i] = D[i] - res[i + 1] * C[i];
+	}
+
+	this->values[n] = res;
+	current--;
 }
