@@ -1,4 +1,9 @@
 #include "closed_form.hpp"
+#include <iostream>
+#include "PDE.h"
+#include <functional>
+#include <cassert>
+#include "blackscholes.h"
 
 // Guidelines:
 //
@@ -20,7 +25,48 @@
 // to call an external function between each step. Define an API
 // that allows to register a function or an abstract class modeling
 // a payoff.
+
+using namespace std;
+
 int main(int argc, const char * argv[])
 {
+	double spot = 100;
+
+	double sigma = .2;
+	double r = .05;
+
+	double T = 1.;
+	double nT = 60;
+	double K = 100;
+	double nX = 200;
+
+	//there is a condition on nX^2 and nT for stability purposes
+
+	double theta = .5;
+	bool isCall = true;
+
+	vector<double> meshX = generateSpotMesh(spot, sigma * sqrt(T), nX);
+	vector<double> meshT = generateMesh(0, T, nT * T);
+
+	PDEBounds CallBounds = {
+		generateCallBound(r,K,T),
+		generateCallBound(r,K,T),
+		generateCallPayoff(K)
+	};
+
+	PDE solution = generate_BS_PDE(
+		generateConstant(r),
+		generateConstant(sigma),
+		meshX,
+		meshT,
+		CallBounds, //
+		theta,
+		true,
+		false
+	);
+
+	solution.solve();
+	cout << "price: " << solution.values[0][nX] << endl;
+
     return 0;
 }

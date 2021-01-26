@@ -27,6 +27,20 @@ PDE::PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bo
 	this->values = vector<vector<double>>(meshT.size());
 	this->values[meshT.size() - 1] = apply2D(bound.tbound, this->meshX_center, *(meshT.end() - 1));
 	current = meshT.size() - 2;
+	if (isConst) {
+		cacheA = this->getWeight(1, this->theta - 1);
+		cacheC = this->getWeight(0, this->theta);
+	}
+
+	if (isConst && constBound) {
+		vector<double> B = this->getBias(1, this->theta - 1);
+		vector<double> D = this->getBias(0, this->theta);
+		cacheB = subVec(B, D);
+	}
+	else if (isConst && !constBound) {
+		cacheB = apply2D([theta, this](double x, double t) {return (dt * (theta - 1)) * this->coef.d(x, t); }, this->meshX_center, 0);
+		cacheD = apply2D([theta, this](double x, double t) {return (dt * theta) * this->coef.d(x, t); }, this->meshX_center, 0);
+	}
 }
 
 vector<vector<double>> PDE::getWeight(int n, double theta) const {

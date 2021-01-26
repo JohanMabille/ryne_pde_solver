@@ -1,5 +1,6 @@
 #include "blackscholes.h"
 
+
 pdefunc generateCallPayoff(double K) {
     return [K](double x, double t)->double {
         double res = exp(x) - K;
