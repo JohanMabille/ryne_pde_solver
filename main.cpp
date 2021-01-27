@@ -4,6 +4,7 @@
 #include <functional>
 #include <cassert>
 #include "blackscholes.h"
+#include "greeks.h"
 
 // Guidelines:
 //
@@ -33,12 +34,12 @@ int main(int argc, const char * argv[])
 	double spot = 100;
 
 	double sigma = .2;
-	double r = .05;
+	double r = .0;
 
 	double T = 1.;
-	double nT = 60;
+	double nT = 10000;
 	double K = 100;
-	double nX = 200;
+	double nX = 50;
 
 	//there is a condition on nX^2 and nT for stability purposes
 
@@ -74,8 +75,12 @@ int main(int argc, const char * argv[])
 	);
 
 	solution.solve();
-	cout << "price: " << solution.values[0][nX] << endl;
+	cout << "price: " << solution.values[0][nX-1] << endl;
+	cout << "price: " << dauphine::bs_price(spot, K, sigma, T, isCall) << endl;
+	
+	
 	solution.to_csv("test.csv");
-
+	delta_csv(solution, "delta.csv");
+	cin.get();
     return 0;
 }
