@@ -144,3 +144,16 @@ void PDE::solve() {
 		this->step();
 	}
 }
+
+void PDE::to_csv(string fname) const {
+	double xmin = meshX[0];
+	double xmax = *(meshX.end() - 1);
+	function<vector<double>(int)> fct;
+	write_csv(fname, meshX, meshT, [this, xmin, xmax](int idx) {
+		double T = this->meshT[idx];
+		vector<double> val = this->values[idx];
+		val.insert(val.begin(), this->bound.xmin(xmin, T));
+		val.push_back(this->bound.xmax(xmax, T));
+		return val;
+	});
+}

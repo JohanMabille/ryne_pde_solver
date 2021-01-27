@@ -2,7 +2,9 @@
 #include "PDE.h"
 
 pdefunc generateCallPayoff(double K);
+pdefunc generatePutPayoff(double K);
 pdefunc generateCallBound(double r, double K, double T);
+pdefunc generatePutBound(double r, double K, double T);
 pdefunc generateConstant(double c);
 vector<double> generateMesh(double start, double end, int size);
 vector<double> generateSpotMesh(double spot, double std, int n);

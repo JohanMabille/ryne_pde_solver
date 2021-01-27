@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 #include "utils.h"
 
 using std::string;
@@ -79,9 +80,8 @@ public:
 	 * @param constBound whether boundary conditions are constant. for further caching
 	 */
 
-	PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound, double theta);
-
-
+	PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound, double theta, 
+	bool isConst = false,bool constBound = false));
 	double alpha(double x, double t, double theta) const;
 	double beta(double x, double t, double theta) const;
 	double gamma(double x, double t, double theta) const;
@@ -90,5 +90,6 @@ public:
 	vector<double> getBiasfromCache(int n, bool current) const;
 	stepMat getStepMatrices(int n) const;
 	void solve();
+	void to_csv(string fname) const;
 };
 

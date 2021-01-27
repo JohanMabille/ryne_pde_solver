@@ -54,12 +54,20 @@ int main(int argc, const char * argv[])
 		generateCallPayoff(K)
 	};
 
+	PDEBounds PutBounds = {
+		generatePutBound(r,K,T),
+		generatePutBound(r,K,T),
+		generatePutPayoff(K)
+	};
+
+	PDEBounds bounds = (isCall) ? CallBounds : PutBounds;
+
 	PDE solution = generate_BS_PDE(
 		generateConstant(r),
 		generateConstant(sigma),
 		meshX,
 		meshT,
-		CallBounds, //
+		bounds,
 		theta,
 		true,
 		false
@@ -67,6 +75,7 @@ int main(int argc, const char * argv[])
 
 	solution.solve();
 	cout << "price: " << solution.values[0][nX] << endl;
+	solution.to_csv("test.csv");
 
     return 0;
 }

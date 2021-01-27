@@ -8,6 +8,12 @@ pdefunc generateCallPayoff(double K) {
     };
 }
 
+pdefunc generatePutPayoff(double K) {
+	return [K](double x, double t)->double {
+		double res = K - exp(x);
+		return (res > 0) ? res : 0;
+	};
+}
 
 pdefunc generateCallBound(double r, double K, double T) {
     return [r, K, T](double x, double t)->double {
@@ -16,6 +22,12 @@ pdefunc generateCallBound(double r, double K, double T) {
     };
 }
 
+pdefunc generatePutBound(double r, double K, double T) {
+	return [r, K, T](double x, double t)->double {
+		double res = K * exp(-r * (T - t)) - exp(x);
+		return (res >= 0) ? res : 0;
+	};
+}
 
 pdefunc generateConstant(double c) {
 	return [c](double x, double t)->double {
