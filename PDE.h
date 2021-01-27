@@ -81,7 +81,7 @@ public:
 	 */
 
 	PDE(PDECoefs coef, vector<double> meshX, vector<double> meshT, PDEBounds bound, double theta, 
-	bool isConst = false,bool constBound = false));
+	bool isConst = false,bool constBound = false);
 	double alpha(double x, double t, double theta) const;
 	double beta(double x, double t, double theta) const;
 	double gamma(double x, double t, double theta) const;
@@ -91,5 +91,8 @@ public:
 	stepMat getStepMatrices(int n) const;
 	void solve();
 	void to_csv(string fname) const;
+	friend void delta_csv(const PDE& pde, string fname, bool convert = true);
+	friend vector<double> delta(const PDE& pde, int t_idx, bool convert);
+
 };
 
