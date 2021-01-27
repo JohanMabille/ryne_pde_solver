@@ -1,6 +1,7 @@
 #include "utils.h"
 #include <cassert>
 #include <fstream>
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -69,4 +70,26 @@ vector<double> subVec(const vector<double>& a, const vector<double>& b) {
         res[i] = a[i] - b[i];
     }
     return res;
+}
+
+void write_csv(string fname,vector<double> meshX,vector<double> meshT, function<vector<double>(int)> values){
+	ofstream file;
+	file.open(fname);
+	// add header
+	string header = "T,";
+	for (double i : meshX) {
+		header += to_string(i) + ",";
+	}
+	file << header.substr(0, header.size() - 1) << endl;
+	for (int pt = 0; pt < meshT.size(); ++pt) {
+		vector<double> vect = values(pt);
+		double T = meshT[pt];
+		string line = to_string(T) + ",";
+		for (double val: vect) {
+			line += to_string(val) + ",";
+		}
+		file << line.substr(0, line.size() - 1) << endl;
+	}
+
+	file.close();
 }
