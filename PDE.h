@@ -93,6 +93,7 @@ public:
 	void to_csv(string fname) const;
 	friend void delta_csv(const PDE& pde, string fname, bool convert = true);
 	friend vector<double> delta(const PDE& pde, int t_idx, bool convert);
-
+    friend void gamma_csv(const PDE& pde, string fname, bool convert = true);
+    friend vector<double> gamma(const PDE& pde, int t_idx, bool convert);
 };
 
