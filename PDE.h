@@ -95,5 +95,7 @@ public:
 	friend vector<double> delta(const PDE& pde, int t_idx, bool convert);
     friend void gamma_csv(const PDE& pde, string fname, bool convert = true);
     friend vector<double> gamma(const PDE& pde, int t_idx, bool convert);
+	friend void theta_csv(const PDE& pde, string fname, bool convert = true);
+	friend vector<double> theta_greek(const PDE& pde, int x_idx);
 };
 

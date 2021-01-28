@@ -94,3 +94,47 @@ void gamma_csv(const PDE& pde,string fname, bool convert) {
         return gamma(pde,idx, convert);
     });
 }
+
+void theta_csv(const PDE& pde, string fname, bool convert) {
+	const vector<double>& meshX = pde.meshX;
+	const vector<double>& meshT = pde.meshT;
+
+	cout << "theta: ";
+	int nX = (meshX.size() - 1) / 2;
+	vector<double> theta_s = theta_greek(pde, nX);
+	cout << theta_s[0] << endl;
+
+	vector<double> mesh_T(meshT.begin(), meshT.end() - 1);
+	vector<double> mesh_X = (convert) ? apply1D([](double x) {return exp(x); }, meshX) : meshX;
+	write_csv(fname, mesh_T, mesh_X, [pde](int idx) {
+		return theta_greek(pde, idx);
+		});
+}
+
+vector<double> theta_greek(const PDE& pde, int x_idx) {
+	const vector<double>& meshX = pde.meshX;
+	const vector<double>& meshT = pde.meshT;
+	const double dx = pde.dx;
+	const double dt = pde.dt;
+	const PDEBounds& bound = pde.bound;
+	vector<double> price;
+	vector<double> res(meshT.size() - 1);
+
+	if (x_idx == 0) {
+		price = apply1D([pde](double t) {return pde.bound.xmin(pde.meshX[0], t); }, meshT);
+	}
+	else if (x_idx == meshX.size() - 1) {
+		price = apply1D([pde, x_idx](double t) {return pde.bound.xmax(pde.meshX[x_idx], t); }, meshT);
+	}
+	else {
+		price = vector<double>(meshT.size());
+		for (int i = 0; i < meshT.size(); ++i) {
+			price[i] = pde.values[i][x_idx - 1];
+		}
+	}
+
+	for (int i = 0; i < res.size(); ++i) {
+		res[i] = (price[i + 1] - price[i]) / dt;
+	}
+	return res;
+}
