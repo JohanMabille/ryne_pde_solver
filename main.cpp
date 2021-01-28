@@ -82,6 +82,7 @@ int main(int argc, const char * argv[])
 	solution.to_csv("test.csv");
 	delta_csv(solution, "delta.csv");
     gamma_csv(solution,"gamma.csv");
+	theta_csv(solution, "theta.csv");
 	cin.get();
     return 0;
 }
