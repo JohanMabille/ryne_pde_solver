@@ -98,5 +98,7 @@ public:
 	friend void theta_csv(const PDE& pde, string fname, bool convert = true);
 	friend vector<double> theta_greek(const PDE& pde, int x_idx);
 	friend vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigma);
+    friend void vega_t_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int t_idx);
+    friend void vega_x_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int x_idx);
 };
 

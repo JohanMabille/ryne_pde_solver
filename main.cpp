@@ -85,6 +85,7 @@ int main(int argc, const char * argv[])
 	theta_csv(solution, "theta.csv");
 	vector<double> meshSigma = generateMesh(0.1, 0.5, 20);
 	vector<vector<vector<double>>> sigmaRes = sigmaIter(solution, meshSigma);
+    vega_t_csv(solution,"vega.csv", meshSigma, sigmaRes, 0);
 	cin.get();
     return 0;
 }
