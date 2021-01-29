@@ -159,8 +159,9 @@ vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigm
 		PDE tmp = PDE(sigmaCoefs, meshX, meshT, bounds, theta, isConst, constBound);
 		tmp.solve();
 		solutions.push_back(tmp.values);
+        return solutions;
 	}
-	return solutions;
+	
 
     vector<double> vega_xt(const vector<vector<vector<double>>>& sigmaIt, vector<double> meshSigma, int x_idx, int t_idx){
         vector<double> result(sigmaIt.size() - 1);
