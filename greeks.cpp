@@ -138,3 +138,26 @@ vector<double> theta_greek(const PDE& pde, int x_idx) {
 	}
 	return res;
 }
+
+vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigma) {
+	PDECoefs coefs = pde.coef;
+	vector<double> meshT = pde.meshT;
+	vector<double> meshX = pde.meshX;
+	PDEBounds bounds = pde.bound;
+	double theta = pde.theta;
+	bool isConst = pde.isConst;
+	bool constBound = pde.constBound;
+	vector<vector<vector<double>>> solutions;
+
+	for (double sigma : meshSigma) {
+		PDECoefs sigmaCoefs = {
+			[sigma](double x,double t) {return -.5 * sigma * sigma; },
+			[sigma,coefs](double x,double t) {return .5 * sigma * sigma - coefs.c(x,t); },
+			coefs.c,
+			coefs.d,
+		};
+		PDE tmp = PDE(sigmaCoefs, meshX, meshT, bounds, theta, isConst, constBound);
+		tmp.solve();
+		solutions.push_back(tmp.values);
+	}
+	return solutions;

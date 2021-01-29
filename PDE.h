@@ -97,5 +97,6 @@ public:
     friend vector<double> gamma(const PDE& pde, int t_idx, bool convert);
 	friend void theta_csv(const PDE& pde, string fname, bool convert = true);
 	friend vector<double> theta_greek(const PDE& pde, int x_idx);
+	friend vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigma);
 };
 
