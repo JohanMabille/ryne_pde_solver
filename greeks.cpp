@@ -159,5 +159,28 @@ vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigm
 		PDE tmp = PDE(sigmaCoefs, meshX, meshT, bounds, theta, isConst, constBound);
 		tmp.solve();
 		solutions.push_back(tmp.values);
+        return solutions;
 	}
-	return solutions;
+	
+
+    vector<double> vega_xt(const vector<vector<vector<double>>>& sigmaIt, vector<double> meshSigma, int x_idx, int t_idx){
+        vector<double> result(sigmaIt.size() - 1);
+        double ds = meshSigma[1] - meshSigma[0];
+        for (int i = 0; i < result.size(); ++i) {
+            result[i] = (sigmaIt[i + 1][t_idx][x_idx] - sigmaIt[i][t_idx][x_idx]) / ds;
+        }
+        return result;
+    }
+    void vega_t_csv(const PDE& pde,string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int t_idx){
+        vector<double> mesh_X = apply1D([](double x) {return exp(x); }, pde.meshX_center);
+        vector<double> mesh_Sig(meshSigma.begin(), meshSigma.end() - 1);
+        write_csv(fname, mesh_Sig, mesh_X, [t_idx, sigmaIt, meshSigma](int idx) {
+            return vega_xt(sigmaIt, meshSigma, idx, t_idx);
+        });
+    }
+    void vega_x_csv(const PDE& pde,string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int x_idx){
+        vector<double> mesh_Sig(meshSigma.begin(), meshSigma.end() - 1);
+        write_csv(fname, mesh_Sig, pde.meshT, [x_idx, sigmaIt, meshSigma](int idx) {
+            return vega_xt(sigmaIt, meshSigma, x_idx, idx);
+        });
+    }
