@@ -81,11 +81,15 @@ int main(int argc, const char * argv[])
     gamma_csv(solution,"gamma.csv");
 	theta_csv(solution, "theta.csv");
 
-	vector<double> meshSigma = generateMesh(0.1, 0.5, 20);
+	int nS = 3;		// like for nX, will result in a volatility mesh with 2*NS +1 values, centered in sigma
+	double delta_vol = 0.1;   // will result in a volatility mesh with bounds = sigma +/- delta_vol
+	vector<double> meshSigma = generateCenteredMesh(sigma, delta_vol, nS);
 	vector<vector<vector<double>>> sigmaRes = sigmaIter(solution, meshSigma);
-	
-    vega_t_csv(solution,"vega.csv", meshSigma, sigmaRes, 0);
 
+	vega_t_csv(solution, "vega.csv", meshSigma, sigmaRes, 0);
+	vector<double> vega0 = vega_xt(sigmaRes, meshSigma, nX - 1, 0);
+	std::cout << "Vega (for 1% vol move):" << vega0[nS] / 100 << std::endl;
+	
 	std::cin.get();
     return 0;
 }
