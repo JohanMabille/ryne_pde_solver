@@ -5,7 +5,7 @@
 
 using std::string;
 
-typedef function<double(double, double)> pdefunc;
+typedef function<double(double, double)> pdefunc; // pdefunc are functions of x and t 
 
 /*
 *	2nd degree PDE df/dt = af''+bf'+cf+d
@@ -21,17 +21,17 @@ typedef function<double(double, double)> pdefunc;
 *	gammaVec,betaVec, alphaVec in the getWeights() method
 */
 
-typedef struct PDECoefs {
+typedef struct PDECoefs { // PDECoefs is a strcuture of 4 functions corresponding to coefficients a, b, c and d
 	pdefunc a;
 	pdefunc b;
 	pdefunc c;
 	pdefunc d;
 } PDECoefs;
 
-typedef struct PDEBounds {
-	pdefunc xmin;
-	pdefunc xmax;
-	pdefunc tbound;
+typedef struct PDEBounds { // PDEBounds is a structure of 3 functions of x and t 
+	pdefunc xmin;  // xmin is a function of t and x which applies to the lower bound
+	pdefunc xmax; // xmax is a function of t and x which applies to the upper bound
+	pdefunc tbound; // tbound is a function of x which applies at time T (payoff of the option)
 } PDEBounds;
 
 typedef struct stepMat {

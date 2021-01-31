@@ -27,29 +27,26 @@
 // that allows to register a function or an abstract class modeling
 // a payoff.
 
-using namespace std;
 
 int main(int argc, const char * argv[])
 {
-	double spot = 100;
+	double spot = 100;	    // Spot price 
+	double sigma = .2;	   // Volatility 
+	double r = .0;		  // Interest rate
+	double T = 1.;		 // Maturity in years
+	double nT = 10000;  // Size of the time mesh
+	double K = 100;    // Strike Price 
+	double nX = 50;   // will result in 2*Nx +1 values in the space mesh centered in log(spot)
 
-	double sigma = .2;
-	double r = .0;
+	// For the method to converge, we should have nT that is greater than nX^2 
 
-	double T = 1.;
-	double nT = 10000;
-	double K = 100;
-	double nX = 50;
-
-	//there is a condition on nX^2 and nT for stability purposes
-
-	double theta = .5;
-	bool isCall = true;
+	double theta = .5;		// theta of the scheme
+	bool isCall = true;		
 
 	vector<double> meshX = generateSpotMesh(spot, sigma * sqrt(T), nX);
 	vector<double> meshT = generateMesh(0, T, nT * T);
 
-	PDEBounds CallBounds = {
+	PDEBounds CallBounds = {	//structure explained in PDE.h
 		generateCallBound(r,K,T),
 		generateCallBound(r,K,T),
 		generateCallPayoff(K)
@@ -75,17 +72,20 @@ int main(int argc, const char * argv[])
 	);
 
 	solution.solve();
-	cout << "price: " << solution.values[0][nX-1] << endl;
-	cout << "price: " << dauphine::bs_price(spot, K, sigma, T, isCall) << endl;
+	std::cout << "Price: " << solution.values[0][nX-1] << std::endl;
+	std::cout << "Price with closed form: " << dauphine::bs_price(spot, K, sigma, T, isCall) << std::endl;
 	
 	
 	solution.to_csv("test.csv");
 	delta_csv(solution, "delta.csv");
     gamma_csv(solution,"gamma.csv");
 	theta_csv(solution, "theta.csv");
+
 	vector<double> meshSigma = generateMesh(0.1, 0.5, 20);
 	vector<vector<vector<double>>> sigmaRes = sigmaIter(solution, meshSigma);
+	
     vega_t_csv(solution,"vega.csv", meshSigma, sigmaRes, 0);
-	cin.get();
+
+	std::cin.get();
     return 0;
 }
