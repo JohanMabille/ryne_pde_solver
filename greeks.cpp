@@ -159,8 +159,8 @@ vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigm
 		PDE tmp = PDE(sigmaCoefs, meshX, meshT, bounds, theta, isConst, constBound);
 		tmp.solve();
 		solutions.push_back(tmp.values);
-		return solutions;
 	}
+	return solutions;
 }
 // with fixed x and t, create a csv with vega for various sigma
 	vector<double> vega_xt(const vector<vector<vector<double>>> & sigmaIt, vector<double> meshSigma, int x_idx, int t_idx){

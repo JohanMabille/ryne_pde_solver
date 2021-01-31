@@ -44,14 +44,17 @@ vector<double> generateMesh(double start, double end, int size) {
     return res;
 }
 
-vector<double> generateSpotMesh(double spot, double std, int n){
-    vector<double> res(2 * n + 1);
-    double step = 5 * std / n;
-    double spot_x = log(spot);
-    for (int i = 0; i < 2*n+1; ++i) {
-        res[i] = spot_x - 5 * std + i * step;
-    }
-    return res;
+vector<double> generateCenteredMesh(double center, double halfLen, double halfN) {
+	vector<double> res(2 * halfN + 1);
+	double step = halfLen / halfN;
+	for (int i = 0; i < 2 * halfN + 1; ++i) {
+		res[i] = center - halfLen + i * step;
+	}
+	return res;
+}
+
+vector<double> generateSpotMesh(double spot, double std, int n) {
+	return generateCenteredMesh(log(spot), 5 * std, n);
 }
 
 PDE generate_BS_PDE(pdefunc r, pdefunc sigma, vector<double> meshX, vector<double> meshT, PDEBounds bounds, double theta, bool constCoef, bool constBound) {
