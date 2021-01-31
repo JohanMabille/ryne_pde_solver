@@ -35,7 +35,7 @@ void delta_csv(const PDE& pde, string fname, bool convert) {
 	const vector<double>& meshX = pde.meshX;
 	const vector<double>& meshT = pde.meshT;
 
-	cout << "delta: ";
+	cout << "Delta: ";
 	vector<double> delta_0 = delta(pde, 0, convert);
 	int nX = (meshX.size() - 1) / 2;
 	cout << delta_0[nX-1] << endl;
@@ -83,7 +83,7 @@ void gamma_csv(const PDE& pde,string fname, bool convert) {
     const vector<double>& meshX = pde.meshX;
     const vector<double>& meshT = pde.meshT;
     
-    cout << "gamma: ";
+    cout << "Gamma: ";
     vector<double> gamma_0 = gamma(pde, 0, convert);
     int nX = (meshX.size() - 1) / 2;
     cout << gamma_0[nX] << endl;
@@ -99,10 +99,10 @@ void theta_csv(const PDE& pde, string fname, bool convert) {
 	const vector<double>& meshX = pde.meshX;
 	const vector<double>& meshT = pde.meshT;
 
-	cout << "theta: ";
+	cout << "Theta (per day): ";
 	int nX = (meshX.size() - 1) / 2;
 	vector<double> theta_s = theta_greek(pde, nX);
-	cout << theta_s[0] << endl;
+	cout << theta_s[0]/365 << endl;
 
 	vector<double> mesh_T(meshT.begin(), meshT.end() - 1);
 	vector<double> mesh_X = (convert) ? apply1D([](double x) {return exp(x); }, meshX) : meshX;
@@ -159,25 +159,29 @@ vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigm
 		PDE tmp = PDE(sigmaCoefs, meshX, meshT, bounds, theta, isConst, constBound);
 		tmp.solve();
 		solutions.push_back(tmp.values);
-        return solutions;
+		return solutions;
 	}
-	
-
-    vector<double> vega_xt(const vector<vector<vector<double>>>& sigmaIt, vector<double> meshSigma, int x_idx, int t_idx){
-        vector<double> result(sigmaIt.size() - 1);
-        double ds = meshSigma[1] - meshSigma[0];
-        for (int i = 0; i < result.size(); ++i) {
-            result[i] = (sigmaIt[i + 1][t_idx][x_idx] - sigmaIt[i][t_idx][x_idx]) / ds;
-        }
-        return result;
+}
+// with fixed x and t, create a csv with vega for various sigma
+	vector<double> vega_xt(const vector<vector<vector<double>>> & sigmaIt, vector<double> meshSigma, int x_idx, int t_idx){
+    vector<double> result(sigmaIt.size() - 1);
+    double ds = meshSigma[1] - meshSigma[0];
+    for (int i = 0; i < result.size(); ++i) {
+        result[i] = (sigmaIt[i + 1][t_idx][x_idx] - sigmaIt[i][t_idx][x_idx]) / ds;
     }
+    return result;
+    }
+
+	// with fixed t, create a csv with vega for various x and sigma
     void vega_t_csv(const PDE& pde,string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int t_idx){
         vector<double> mesh_X = apply1D([](double x) {return exp(x); }, pde.meshX_center);
-        vector<double> mesh_Sig(meshSigma.begin(), meshSigma.end() - 1);
+		vector<double> mesh_Sig(meshSigma.begin(), meshSigma.end() - 1);
         write_csv(fname, mesh_Sig, mesh_X, [t_idx, sigmaIt, meshSigma](int idx) {
             return vega_xt(sigmaIt, meshSigma, idx, t_idx);
         });
     }
+
+	// with fixed x, create a csv with vega for various t and sigma
     void vega_x_csv(const PDE& pde,string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int x_idx){
         vector<double> mesh_Sig(meshSigma.begin(), meshSigma.end() - 1);
         write_csv(fname, mesh_Sig, pde.meshT, [x_idx, sigmaIt, meshSigma](int idx) {
