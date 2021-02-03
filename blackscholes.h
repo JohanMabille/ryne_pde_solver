@@ -1,3 +1,4 @@
+// Not standard (although supported by most compilers)
 #pragma once
 #include "PDE.h"
 

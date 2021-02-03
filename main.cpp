@@ -35,8 +35,13 @@ int main(int argc, const char * argv[])
 	double sigma = .2;	   // Volatility 
 	double r = .0;		  // Interest rate
 	double T = 1.;		 // Maturity in years
+        // That's huge for a time mesh. Typical values
+        // in pricers are 1 point each day for short maturities,
+        // and 1 point each 3 days for long maturities
 	double nT = 10000;  // Size of the time mesh
 	double K = 100;    // Strike Price 
+        // This is a bit small, you can improve accuracy with Nx = 500 (to get 1001 points),
+        // which is a typical value used in financial PDE solvers
 	double nX = 50;   // will result in 2*Nx +1 values in the space mesh centered in log(spot)
 
 	// For the method to converge, we should have nT that is greater than nX^2 

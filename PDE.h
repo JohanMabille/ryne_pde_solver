@@ -5,6 +5,7 @@
 
 using std::string;
 
+// More C++14: using pdefunc = std::function<double(double, double)>;
 typedef function<double(double, double)> pdefunc; // pdefunc are functions of x and t 
 
 /*
@@ -21,6 +22,11 @@ typedef function<double(double, double)> pdefunc; // pdefunc are functions of x 
 *	gammaVec,betaVec, alphaVec in the getWeights() method
 */
 
+// This is C style coding
+// a simple struc PDECoefs {}; is enough in C++
+// A hierachy of classes with virtual methods for computing
+// the coefficients would be more appropriate: it allows you
+// some optimizations such as precomputing some coefficients,
 typedef struct PDECoefs { // PDECoefs is a strcuture of 4 functions corresponding to coefficients a, b, c and d
 	pdefunc a;
 	pdefunc b;
@@ -28,6 +34,9 @@ typedef struct PDECoefs { // PDECoefs is a strcuture of 4 functions correspondin
 	pdefunc d;
 } PDECoefs;
 
+// A hierarchy of classes would have been more expressive
+// (you could have classes for DIrichlet and NeuMann inheriting
+// from an abstract boundary condition class)
 typedef struct PDEBounds { // PDEBounds is a structure of 3 functions of x and t 
 	pdefunc xmin;  // xmin is a function of t and x which applies to the lower bound
 	pdefunc xmax; // xmax is a function of t and x which applies to the upper bound
@@ -46,6 +55,8 @@ typedef struct stepMat {
 class PDE
 {
 private:
+    // An improvement would be to split this class
+    // into a pure solver class and a PDE Grid class
 	PDECoefs coef;
 	vector<double> meshX;
 	vector<double> meshT;
@@ -67,6 +78,8 @@ private:
 
 
 public:
+        // This should be a private data member. A public const method should
+        // be provided here for users that need ot read the values
 	vector<vector<double>> values;
 	/**
 	 * Generic PDE solver for 2nd order PDEs
@@ -91,6 +104,7 @@ public:
 	stepMat getStepMatrices(int n) const;
 	void solve();
 	void to_csv(string fname) const;
+        // PDE should provide a public API that avoids all these friend functions
 	friend void delta_csv(const PDE& pde, string fname, bool convert);
 	friend vector<double> delta(const PDE& pde, int t_idx, bool convert);
         friend void gamma_csv(const PDE& pde, string fname, bool convert);

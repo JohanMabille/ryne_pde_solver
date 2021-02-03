@@ -78,6 +78,10 @@ vector<double> PDE::getBiasfromCache(int n, bool current) const {
 }
 
 stepMat PDE::getStepMatrices(int n) const {
+        // This is a good idea to cache the coefficient when sigma and r are const.
+        // You could go further and store A, B, C and D as mutable data members that
+        // you fill here (or that you pass as argument to this method): this would avoid
+        // the allocation of the vector (and the copies when returning them) at each step.
 	// Af(n+1)+B = Cf(n)+D
 	vector<vector<double>> A;
 	vector<double> B;
