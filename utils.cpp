@@ -4,10 +4,13 @@
 #include <string>
 #include <iostream>
 
+// Ouch! Terrible bad practice!
 using namespace std;
 
 vector<double> apply1D(const function<double(double)>& f, const vector<double>& x) {
     vector<double> res(x.size());
+    // This could be replaced with
+    // std::transform(x.cbegin(), x.cend(), res.begin(), f);
     for (int i = 0; i < x.size(); ++i) {
         res[i] = f(x[i]);
     }
@@ -16,6 +19,8 @@ vector<double> apply1D(const function<double(double)>& f, const vector<double>& 
 
 vector<double> apply2D(const function<double(double, double)>& f, const vector<double>& x, double t) {
     vector<double> res(x.size());
+    // This could be replaced with
+    // std::transform(x.cbegin(), x.cend(), res.begin(), [&t](double d) { return f(d, t); });
     for (int i = 0; i < x.size(); ++i) {
         res[i] = f(x[i], t);
     }
@@ -57,6 +62,7 @@ vector<double> trigMult(const vector<vector<double>>& tridiag, const vector<doub
 vector<double> addVec(const vector<double>& a, const vector<double>& b) {
     assert(a.size() == b.size());
     vector<double> res(a.size());
+    // std::transform(a.begin(), a.end(), b.begin(), res.begin() std::plus<double>());
     for (int i = 0; i < a.size(); ++i) {
         res[i] = a[i] + b[i];
     }
@@ -66,6 +72,7 @@ vector<double> addVec(const vector<double>& a, const vector<double>& b) {
 vector<double> subVec(const vector<double>& a, const vector<double>& b) {
     assert(a.size() == b.size());
     vector<double> res(a.size());
+    // std::transform(a.begin(), a.end(), b.begin(), res.begin() std::minus<double>());
     for (int i = 0; i < a.size(); ++i) {
         res[i] = a[i] - b[i];
     }
