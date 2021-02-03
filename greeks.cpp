@@ -1,6 +1,8 @@
 #include "greeks.h"
 #include <iostream>
+#include <cmath>
 
+// Ouch! This is evil!
 using namespace std;
 
 vector<double> delta(const PDE& pde, int t_idx, bool convert) {

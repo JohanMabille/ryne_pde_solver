@@ -21,9 +21,17 @@ if(MSVC)
 endif()
 
 set(PDE_SOLVER_SRCS
+    blackscholes.cpp
+    blackscholes.h
     closed_form.hpp
     closed_form.cpp
+    greeks.cpp
+    greeks.h
     main.cpp
+    PDE.cpp
+    PDE.h
+    utils.cpp
+    utils.h
 )
 
 set(PDE_SOLVER_TARGET pde_solver)

@@ -5,6 +5,7 @@
 #include <cassert>
 #include "blackscholes.h"
 #include "greeks.h"
+#include <cmath>
 
 // Guidelines:
 //
@@ -43,7 +44,7 @@ int main(int argc, const char * argv[])
 	double theta = .5;		// theta of the scheme
 	bool isCall = true;		
 
-	vector<double> meshX = generateSpotMesh(spot, sigma * sqrt(T), nX);
+	vector<double> meshX = generateSpotMesh(spot, sigma * std::sqrt(T), nX);
 	vector<double> meshT = generateMesh(0, T, nT * T);
 
 	PDEBounds CallBounds = {	//structure explained in PDE.h

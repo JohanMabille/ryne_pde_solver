@@ -1,4 +1,7 @@
 #include "blackscholes.h"
+#include <cmath>
+using std::exp;
+using std::log;
 
 
 pdefunc generateCallPayoff(double K) {

@@ -91,14 +91,14 @@ public:
 	stepMat getStepMatrices(int n) const;
 	void solve();
 	void to_csv(string fname) const;
-	friend void delta_csv(const PDE& pde, string fname, bool convert = true);
+	friend void delta_csv(const PDE& pde, string fname, bool convert);
 	friend vector<double> delta(const PDE& pde, int t_idx, bool convert);
-    friend void gamma_csv(const PDE& pde, string fname, bool convert = true);
-    friend vector<double> gamma(const PDE& pde, int t_idx, bool convert);
-	friend void theta_csv(const PDE& pde, string fname, bool convert = true);
+        friend void gamma_csv(const PDE& pde, string fname, bool convert);
+        friend vector<double> gamma(const PDE& pde, int t_idx, bool convert);
+	friend void theta_csv(const PDE& pde, string fname, bool convert);
 	friend vector<double> theta_greek(const PDE& pde, int x_idx);
 	friend vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigma);
-    friend void vega_t_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int t_idx);
-    friend void vega_x_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int x_idx);
+        friend void vega_t_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int t_idx);
+        friend void vega_x_csv(const PDE& pde, string fname, vector<double> meshSigma, const vector<vector<vector<double>>>& sigmaIt, int x_idx);
 };
 

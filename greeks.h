@@ -1,11 +1,11 @@
 #pragma once
 #include "PDE.h"
 
-void delta_csv(const PDE& pde, string fname, bool convert);
+void delta_csv(const PDE& pde, string fname, bool convert = true);
 vector<double> delta(const PDE& pde, int t_idx, bool convert);
-void gamma_csv(const PDE& pde, string fname, bool convert);
+void gamma_csv(const PDE& pde, string fname, bool convert = true);
 vector<double> gamma(const PDE& pde, int t_idx, bool convert);
-void theta_csv(const PDE& pde, string fname, bool convert);
+void theta_csv(const PDE& pde, string fname, bool convert = true);
 vector<double> theta_greek(const PDE& pde, int x_idx);
 vector<vector<vector<double>>> sigmaIter(const PDE& pde, vector<double> meshSigma);
 vector<double> vega_xt(const vector<vector<vector<double>>>& sigmaIt, vector<double> meshSigma, int x_idx, int t_idx) ;
